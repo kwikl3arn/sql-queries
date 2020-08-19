@@ -1,0 +1,15 @@
+Select distinct/UNIQUE but return all columns(SELECT DISTINCT field1, * from table)?
+If your table was not that large, and assuming your primary key was an auto-incrementing integer you could do something like this:
+
+SELECT 
+  table.*
+FROM table
+--be able to take out dupes later
+LEFT JOIN (
+  SELECT field, MAX(id) as id
+  FROM table
+  GROUP BY field
+) as noDupes on noDupes.id = table.id
+WHERE
+  //this will result in only the last instance being seen
+  noDupes.id is not NULL
